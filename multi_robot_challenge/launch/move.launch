@@ -1,0 +1,34 @@
+<launch>
+  <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
+  <arg name="move_forward_only" default="false"/>
+  <arg name="robot_namespace_0" default="tb3_0"/>
+
+  <group ns="$(arg robot_namespace_0)">
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+      <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+      <rosparam file="$(find multi_robot_challenge)/param/costmap_common_params_$(arg model).yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(find multi_robot_challenge)/param/costmap_common_params_$(arg model).yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(find turtlebot3_navigation)/param/local_costmap_params.yaml" command="load" />
+      <rosparam file="$(find turtlebot3_navigation)/param/global_costmap_params.yaml" command="load" />
+      <rosparam file="$(find turtlebot3_navigation)/param/move_base_params.yaml" command="load" />
+      <rosparam file="$(find multi_robot_challenge)/param/dwa_local_planner_params_$(arg model).yaml" command="load" />
+      
+      <param name="global_costmap/scan/sensor_frame" value="$(arg robot_namespace_0)/base_scan"/>
+      <param name="global_costmap/obstacle_layer/scan/sensor_frame"
+	     value="$(arg robot_namespace_0)/base_scan"/>
+      <param name="global_costmap/global_frame" value="$(arg robot_namespace_0)/map"/>
+      <param name="global_costmap/robot_base_frame"
+	     value="$(arg robot_namespace_0)/base_footprint"/>
+      <param name="local_costmap/scan/sensor_frame" value="$(arg robot_namespace_0)/base_scan"/>
+      <param name="local_costmap/obstacle_layer/scan/sensor_frame"
+	     value="$(arg robot_namespace_0)/base_scan"/>
+      <param name="local_costmap/global_frame" value="$(arg robot_namespace_0)/odom"/>
+      <param name="local_costmap/robot_base_frame"
+	     value="$(arg robot_namespace_0)/base_footprint"/>
+
+      <remap from="map" to="/$(arg robot_namespace_0)/map_filtered"/>
+      <param name="DWAPlannerROS/min_vel_x" value="0.0" if="$(arg move_forward_only)" />
+    </node>
+  </group>
+  
+</launch>

@@ -1,0 +1,14 @@
+<launch>
+    <arg name="first_tb3"  default="tb3_0"/>
+    <arg name="second_tb3" default="tb3_1"/>
+    
+    <node pkg="multi_robot_challenge" name="leader" type="leader.py" output="screen" />    
+
+    <group ns="$(arg first_tb3)">
+        <node pkg="multi_robot_challenge" name="robot" type="robot.py" output="screen" />
+    </group>
+
+    <group ns="$(arg second_tb3)">
+        <node pkg="multi_robot_challenge" name="robot" type="robot.py" output="screen" />
+    </group>
+</launch>

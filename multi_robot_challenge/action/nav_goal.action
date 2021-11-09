@@ -1,0 +1,6 @@
+geometry_msgs/Point target
+---
+bool success
+---
+geometry_msgs/Point current_pos
+float64 time_spent

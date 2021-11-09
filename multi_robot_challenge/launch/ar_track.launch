@@ -1,0 +1,19 @@
+<launch>
+    <arg name="robot_namespace" default="tb3_0"/>
+    <arg name="camera" default="camera" />
+
+    <arg name="pi/2" value="1.5707963267948966" />
+    <arg name="camera_transformation" value="0 0 0 0 0 0" />
+    <group ns="$(arg robot_namespace)">
+        <node pkg="tf" type="static_transform_publisher" name="$(arg camera)_base_link_3"
+            args="$(arg camera_transformation) /map /$(arg robot_namespace)/camera_rgb_optical_frame 100" />  
+        <arg name="marker_size" default="6" />
+        <arg name="max_new_marker_error" default="0.08" />
+        <arg name="max_track_error" default="0.2" />
+        <arg name="cam_image_topic" default="/$(arg robot_namespace)/camera/rgb/image_raw" />
+        <arg name="cam_info_topic" default="/$(arg robot_namespace)/camera/rgb/camera_info" />   
+        <arg name="output_frame" default="/$(arg robot_namespace)/camera_rgb_optical_frame" />
+
+        <node name="ar_track_alvar" pkg="ar_track_alvar" type="individualMarkersNoKinect" respawn="false" output="screen" args="$(arg marker_size) $(arg max_new_marker_error) $(arg max_track_error) $(arg cam_image_topic) $(arg cam_info_topic) $(arg output_frame)" />
+    </group>
+</launch>
