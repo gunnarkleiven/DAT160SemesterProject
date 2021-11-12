@@ -6,9 +6,11 @@
 
     <group ns="$(arg first_tb3)">
         <node pkg="multi_robot_challenge" name="robot" type="robot.py" output="screen" />
+            <param name="robot_name" value="$(arg first_tb3)"/>
     </group>
 
-    <group ns="$(arg second_tb3)">
+    <!-- <group ns="$(arg second_tb3)">
         <node pkg="multi_robot_challenge" name="robot" type="robot.py" output="screen" />
-    </group>
+            <param name="robot_name" type="string" value="$(arg second_tb3)"/>
+    </group> -->
 </launch>

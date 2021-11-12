@@ -17,14 +17,17 @@ class robot_controller():
 
         # Subscriber
         # With "/" makes them subscribe to the topic /leader_commands without the namespaces
-        # omitting the "/" makes them subscribe to the topic with namespaces, e.g. /tb3_0/leader_commander
+        # omitting the "/" makes then subscribe to the topic with namespaces, e.g. /tb3_0/leader_commander
         # rospy.Subscriber('/leader_commands', Pose, self.leader_command_callback)
         rospy.Subscriber('leader_commands', Pose, self.leader_command_callback)
 
         # Publishers
         self.leader_info_pub = rospy.Publisher("/robot_information", String, queue_size=10)
 
-        # Initial target
+        # Action server, receives goals from the leader
+        self.action_server = actionlib.SimpleActionServer(self.robot_name + "_move_command", MoveBaseAction, execute_cb=self.execute_move_command_cb, auto_start=False)
+        self.action_server.start()
+
         self.target = Pose()
         self.target.position.x = 0.0
         self.target.position.y = 0.0
@@ -34,11 +37,15 @@ class robot_controller():
         self.move_base_client = actionlib.SimpleActionClient('move_base',MoveBaseAction)
         self.move_base_client.wait_for_server()
 
-    def leader_command_callback(self, pose):
-        rospy.loginfo('Received command from leader')
-        self.target = pose
-        self.move_to_target()
+        rospy.loginfo("[" + self.robot_name + "] finished")
 
+
+    def execute_move_command_cb(self, goal):
+        self.action_server.publish_feedback("This is a test feedback from " + self.robot_name)
+        time.sleep(3)
+        result = MoveBaseAction()
+        self.action_server.set_succeeded(result)
+    
 
     def move_base_done_cb(self,status,result):
         rospy.loginfo("robot finished navigation")
@@ -71,7 +78,11 @@ class robot_controller():
         self.move_base_client.wait_for_result()
 
     
-    
+    def leader_command_callback(self, pose):
+        rospy.loginfo('Received command from leader')
+        self.target = pose
+        self.move_to_target()
+
 
     def main(self):
         rospy.spin()
