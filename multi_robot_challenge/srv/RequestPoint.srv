@@ -1,0 +1,6 @@
+geometry_msgs/Point robot_point
+string robotname
+---
+geometry_msgs/Point target_point
+bool success
+string nice_friendly_message

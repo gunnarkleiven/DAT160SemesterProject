@@ -64,6 +64,7 @@ add_service_files(
   SetFloat.srv
   SetPose.srv
   GoPoint.srv
+  RequestPoint.srv
 )
 
 ## Generate actions in the 'action' folder
